@@ -1,20 +1,22 @@
-import { CROSS_SUIT, DIAMONDS_SUIT, HEARTS_SUIT, SPADES_SUIT } from "../../const";
-import styles from "./Card.module.css";
+import { CROSS_SUIT, DIAMONDS_SUIT, HEARTS_SUIT, SPADES_SUIT } from "../../const"
+import styles from "./Card.module.css"
 
-import heartsImageUrl from "./images/hearts.svg";
-import crossImageUrl from "./images/cross.svg";
-import spadesImageUrl from "./images/spades.svg";
-import diamondsImageUrl from "./images/diamonds.svg";
-import cardShirtImageUrl from "./images/сard-shirt.svg";
+import heartsImageUrl from "./images/hearts.svg"
+import crossImageUrl from "./images/cross.svg"
+import spadesImageUrl from "./images/spades.svg"
+import diamondsImageUrl from "./images/diamonds.svg"
+import cardShirtImageUrl from "./images/сard-shirt.svg"
 
-import cn from "classnames";
+import cn from "classnames"
+
 
 const images = {
-  [HEARTS_SUIT]: heartsImageUrl,
-  [CROSS_SUIT]: crossImageUrl,
-  [SPADES_SUIT]: spadesImageUrl,
+  [HEARTS_SUIT]:   heartsImageUrl,
+  [CROSS_SUIT]:    crossImageUrl,
+  [SPADES_SUIT]:   spadesImageUrl,
   [DIAMONDS_SUIT]: diamondsImageUrl,
-};
+}
+
 
 const OpenCard = ({ rank, suit }) => {
   return (
@@ -37,23 +39,19 @@ const OpenCard = ({ rank, suit }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 const ClosedCard = ({ onClick }) => (
   <button onClick={onClick} className={cn(styles.card, styles.cardClosed)}>
     <img src={cardShirtImageUrl} alt="card shirt" />
   </button>
-);
+)
 
 export function Card({ onClick, suit, rank, open }) {
   return (
     <div>
-      <div
-        className={cn(styles.flipContainer, {
-          [styles.flip]: open,
-        })}
-      >
+      <div className={cn(styles.flipContainer, { [styles.flip]: open })}>
         <div className={styles.flipper}>
           <div className={styles.front}>
             <ClosedCard onClick={onClick} />
@@ -65,5 +63,5 @@ export function Card({ onClick, suit, rank, open }) {
         </div>
       </div>
     </div>
-  );
+  )
 }

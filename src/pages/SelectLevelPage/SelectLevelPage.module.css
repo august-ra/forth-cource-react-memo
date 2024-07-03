@@ -1,3 +1,4 @@
+
 .container {
   width: 100%;
   min-height: 100%;
@@ -21,7 +22,6 @@
   color: #004980;
   text-align: center;
   font-variant-numeric: lining-nums proportional-nums;
-  font-family: StratosSkyeng;
   font-size: 40px;
   font-style: normal;
   font-weight: 400;
@@ -51,14 +51,13 @@
 .levelLink {
   color: #0080c1;
   text-align: center;
-  font-family: StratosSkyeng;
   font-size: 64px;
   font-style: normal;
   font-weight: 400;
   line-height: 72px;
   text-decoration: none;
-}
 
-.levelLink:visited {
-  color: #0080c1;
+  &:visited {
+    color: #0080c1;
+  }
 }

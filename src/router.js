@@ -10,12 +10,16 @@ export const router = createBrowserRouter(
       element: <SelectLevelPage />,
     },
     {
+      path:    "/game",
+      element: <GamePage value={2} />,
+    },
+    {
       path:    "/game/:pairsCount",
       element: <GamePage />,
     },
   ],
   /**
-   * basename нужен для корректной работы в gh pages
+   * basename нужен для корректной работы в GitHub Pages
    * он же указан в homepage package.json и в index.html
    */
   { basename: "/react-memo" },

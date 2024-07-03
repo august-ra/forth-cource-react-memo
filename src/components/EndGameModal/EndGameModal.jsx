@@ -5,7 +5,7 @@ import deadImageUrl from "./images/dead.png"
 import celebrationImageUrl from "./images/celebration.png"
 
 
-export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick }) {
+export function EndGameModal({ isWon, gameDurationMinutes, gameDurationSeconds, onClick }) {
   const title = isWon ? "Вы победили!" : "Вы проиграли!"
   const imgSrc = isWon ? celebrationImageUrl : deadImageUrl
   const imgAlt = isWon ? "celebration emoji" : "dead emoji"

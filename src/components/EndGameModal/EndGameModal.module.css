@@ -1,3 +1,4 @@
+
 .modal {
   width: 480px;
   height: 459px;
@@ -18,7 +19,6 @@
 .title {
   color: #004980;
   font-variant-numeric: lining-nums proportional-nums;
-  font-family: StratosSkyeng;
   font-size: 40px;
   font-style: normal;
   font-weight: 400;
@@ -30,7 +30,6 @@
 .description {
   color: #000;
   font-variant-numeric: lining-nums proportional-nums;
-  font-family: StratosSkyeng;
   font-size: 24px;
   font-style: normal;
   font-weight: 400;
@@ -41,7 +40,6 @@
 
 .time {
   color: #000;
-  font-family: StratosSkyeng;
   font-size: 64px;
   font-style: normal;
   font-weight: 400;

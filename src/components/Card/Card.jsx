@@ -18,7 +18,7 @@ const images = {
 }
 
 
-const OpenCard = ({ rank, suit }) => {
+export function OpenCard({ rank, suit }) {
   return (
     <div className={styles.card}>
       <div className={styles.content}>
@@ -42,11 +42,13 @@ const OpenCard = ({ rank, suit }) => {
   )
 }
 
-const ClosedCard = ({ onClick }) => (
-  <button onClick={onClick} className={cn(styles.card, styles.cardClosed)}>
-    <img src={cardShirtImageUrl} alt="card shirt" />
-  </button>
-)
+export function ClosedCard({ onClick }) {
+  return (
+    <button onClick={onClick} className={cn(styles.card, styles.cardClosed)}>
+      <img src={cardShirtImageUrl} alt="card shirt" />
+    </button>
+  )
+}
 
 export function Card({ onClick, suit, rank, open }) {
   return (
@@ -57,7 +59,7 @@ export function Card({ onClick, suit, rank, open }) {
             <ClosedCard onClick={onClick} />
           </div>
           <div className={styles.back}>
-            {/* Защита от читерства через dev tools: Скрываем масть и ранг пока карта не открыта */}
+            {/* Защита от читерства через Dev Tools: скрываем масть и ранг, пока карта не открыта */}
             <OpenCard suit={open ? suit : ""} rank={open ? rank : ""} />
           </div>
         </div>

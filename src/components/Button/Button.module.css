@@ -1,3 +1,4 @@
+
 .button {
   width: 246px;
   height: 48px;
@@ -10,7 +11,6 @@
   font-variant-numeric: lining-nums proportional-nums;
 
   /* Pres → Caption S */
-  font-family: StratosSkyeng;
   font-size: 24px;
   font-style: normal;
   font-weight: 400;

@@ -6,7 +6,7 @@ export function SelectLevelPage() {
   return (
     <div className={styles.container}>
       <div className={styles.modal}>
-        <h1 className={styles.title}>Выбери сложность</h1>
+        <h1 className={styles.title}>Выберите сложность</h1>
         <ul className={styles.levels}>
           <li className={styles.level}>
             <Link className={styles.levelLink} to="/game/3">

@@ -10,9 +10,9 @@ import { shuffle } from "lodash"
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST"
 const STATUS_WON = "STATUS_WON"
-// Идет игра: карты закрыты, игрок может их открыть
+// Идёт игра: карты закрыты, игрок может их открыть
 const STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS"
-// Начало игры: игрок видит все карты в течение нескольких секунд
+// Начинается игра: игрок видит все карты в течение нескольких секунд
 const STATUS_PREVIEW = "STATUS_PREVIEW"
 
 
@@ -52,21 +52,22 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
   // Состояние для таймера, высчитывается в setInterval на основе gameStartDate и gameEndDate
   const [timer, setTimer] = useState({
-    seconds: 0,
     minutes: 0,
+    seconds: 0,
   })
-
-  function finishGame(status = STATUS_LOST) {
-    setGameEndDate(new Date())
-    setStatus(status)
-  }
 
   function startGame() {
     const startDate = new Date()
+
     setGameEndDate(null)
     setGameStartDate(startDate)
     setTimer(getTimerValue(startDate, null))
     setStatus(STATUS_IN_PROGRESS)
+  }
+
+  function finishGame(status = STATUS_LOST) {
+    setGameEndDate(new Date())
+    setStatus(status)
   }
 
   function resetGame() {
@@ -88,7 +89,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     if (clickedCard.open)
       return
 
-    // Игровое поле после открытия кликнутой карты
+    // Игровое поле после открытия выбранной карты
     const nextCards = cards.map((card) => {
       if (card.id !== clickedCard.id)
         return card
@@ -130,11 +131,10 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
   // Игровой цикл
   useEffect(() => {
-    // В статусах кроме превью доп логики не требуется
+    // В статусах кроме превью доп. логики не требуется
     if (status !== STATUS_PREVIEW)
       return
 
-    // В статусе превью мы
     if (pairsCount > 36)
       return alert("Столько пар сделать невозможно")
 
@@ -165,26 +165,37 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     <div className={styles.container}>
       <div className={styles.header}>
         <div className={styles.timer}>
-          {status === STATUS_PREVIEW ? (
-            <div>
-              <p className={styles.previewText}>Запоминайте пары!</p>
-              <p className={styles.previewDescription}>Игра начнется через {previewSeconds} секунд</p>
-            </div>
-          ) : (
-            <>
-              <div className={styles.timerValue}>
-                <div className={styles.timerDescription}>min</div>
-                <div>{timer.minutes.toString().padStart(2, "0")}</div>
-              </div>
-              :
-              <div className={styles.timerValue}>
-                <div className={styles.timerDescription}>sec</div>
-                <div>{timer.seconds.toString().padStart(2, "0")}</div>
-              </div>
-            </>
-          )}
+          {
+            status === STATUS_PREVIEW
+              ? (
+                <div>
+                  <p className={styles.previewText}>Запоминайте пары!</p>
+                  <p className={styles.previewDescription}>
+                    Игра начнётся через {previewSeconds} секунд
+                  </p>
+                </div>
+              )
+              : (
+                <>
+                  <div className={styles.timerValue}>
+                    <div className={styles.timerDescription}>min</div>
+                    <div>{timer.minutes.toString().padStart(2, "0")}</div>
+                  </div>
+                  :
+                  <div className={styles.timerValue}>
+                    <div className={styles.timerDescription}>sec</div>
+                    <div>{timer.seconds.toString().padStart(2, "0")}</div>
+                  </div>
+                </>
+              )
+          }
         </div>
-        {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
+        {
+          status === STATUS_IN_PROGRESS
+            && (
+              <Button onClick={resetGame}>Начать заново</Button>
+            )
+        }
       </div>
 
       <div className={styles.cards}>
@@ -199,12 +210,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         isGameEnded
           && (
             <div className={styles.modalContainer}>
-              <EndGameModal
-                isWon={status === STATUS_WON}
-                gameDurationSeconds={timer.seconds}
-                gameDurationMinutes={timer.minutes}
-                onClick={resetGame}
-              />
+              <EndGameModal isWon={status === STATUS_WON} gameDurationMinutes={timer.minutes} gameDurationSeconds={timer.seconds} onClick={resetGame} />
             </div>
           )
       }

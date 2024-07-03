@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react"
 import styles from "./Cards.module.css"
 import { Button } from "../Button/Button"
+import { NumericLabel } from "../NumericLabel/NumericLabel"
 import { Card } from "../Card/Card"
 import { EndGameModal } from "../EndGameModal/EndGameModal"
-import { generateDeck } from "../../utils/cards"
+import { calcUnits, generateDeck } from "../../utils/cards"
 import { shuffle } from "lodash"
 
 
@@ -50,6 +51,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   // Дата конца игры
   const [gameEndDate, setGameEndDate] = useState(null)
 
+  // Состояние для таймера до начала игры
+  const [timerToStart, setTimerToStart] = useState(previewSeconds)
   // Состояние для таймера, высчитывается в setInterval на основе gameStartDate и gameEndDate
   const [timer, setTimer] = useState({
     minutes: 0,
@@ -142,13 +145,19 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       return shuffle(generateDeck(pairsCount))
     })
 
-    const timerId = setTimeout(() => {
-      startGame()
-    }, previewSeconds * 1000)
+    let time = previewSeconds
 
-    return () => {
-      clearTimeout(timerId)
-    }
+    const intervalId = setInterval(() => {
+      // console.log(time)
+
+      if (time > 1) {
+        --time
+        return setTimerToStart(time)
+      }
+
+      clearInterval(intervalId)
+      startGame()
+    }, 1000)
   }, [status, pairsCount, previewSeconds])
 
   // Обновляем значение таймера в интервале
@@ -171,21 +180,13 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 <div>
                   <p className={styles.previewText}>Запоминайте пары!</p>
                   <p className={styles.previewDescription}>
-                    Игра начнётся через {previewSeconds} секунд
+                    Игра начнётся через {timerToStart} {calcUnits(timerToStart, "секунд", "секунду", "секунды")}
                   </p>
                 </div>
               )
               : (
                 <>
-                  <div className={styles.timerValue}>
-                    <div className={styles.timerDescription}>min</div>
-                    <div>{timer.minutes.toString().padStart(2, "0")}</div>
-                  </div>
-                  :
-                  <div className={styles.timerValue}>
-                    <div className={styles.timerDescription}>sec</div>
-                    <div>{timer.seconds.toString().padStart(2, "0")}</div>
-                  </div>
+                  <NumericLabel title="min" value={timer.minutes} /> : <NumericLabel title="sec" value={timer.seconds} />
                 </>
               )
           }

@@ -16,14 +16,14 @@ export function SelectLevelPage() {
               <>
                 <h2 className={styles.title}>Выберите<br />количество шансов<br />на ошибку</h2>
                 <ul className={styles.levels}>
-                  <li className={`${styles.level} ${styles.chance}`}>
-                    <p className={styles.levelLink} onClick={() => selectChances(false)}>
+                  <li className={`${styles.level} ${styles.chance}`} onClick={() => selectChances(false)}>
+                    <p className={styles.levelLink}>
                       0
                     </p>
                     <p className={styles.subtext}>Только <b>«hardcore»</b></p>
                   </li>
-                  <li className={`${styles.level} ${styles.chance}`}>
-                    <p className={styles.levelLink} onClick={() => selectChances(true)}>
+                  <li className={`${styles.level} ${styles.chance}`} onClick={() => selectChances(true)}>
+                    <p className={styles.levelLink}>
                       3
                     </p>
                     <p className={styles.subtext}>Режим <b>«lite»</b>, пожалуйста</p>

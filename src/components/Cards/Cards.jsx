@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import styles from "./Cards.module.css"
+import { ChancesContext } from "../../context/ChancesContext/ChancesContext"
 import { Button } from "../Button/Button"
 import { NumericLabel } from "../NumericLabel/NumericLabel"
 import { Card } from "../Card/Card"
 import { EndGameModal } from "../EndGameModal/EndGameModal"
-import { calcUnits, generateDeck } from "../../utils/cards"
+import { chooseColorName, generateDeck, printTimer, printTries } from "../../utils/cards"
 import { shuffle } from "lodash"
 
 
@@ -43,6 +44,8 @@ function getTimerValue(startDate, endDate) {
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([])
+  // Предыдущая открытая карта, выбранная после удачной пары или сразу после начала игры
+  const [previousCard, setPreviousCard] = useState(null)
   // Текущий статус игры
   const [status, setStatus] = useState(STATUS_PREVIEW)
 
@@ -58,6 +61,9 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     minutes: 0,
     seconds: 0,
   })
+
+  const { useChances, getChancesCount } = useContext(ChancesContext)
+  const [chancesCount, setChancesCount] = useState(getChancesCount())
 
   function startGame() {
     const startDate = new Date()
@@ -78,6 +84,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setGameEndDate(null)
     setTimer(getTimerValue(null, null))
     setStatus(STATUS_PREVIEW)
+
+    setChancesCount(getChancesCount())
   }
 
   /**
@@ -121,13 +129,32 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       return sameCards.length < 2
     })
 
-    const playerLost = openCardsWithoutPair.length >= 2
+    switch (openCardsWithoutPair.length) {
+      case 0:
+        // "Игрок нашёл пару", т.к. на поле есть только пары одинаковых открытых карт
+        return setPreviousCard(null)
+      case 1:
+        // "Игрок ищет пару", т.к. на поле есть нечётное количество открытых карт
+        return setPreviousCard(clickedCard)
+    }
+
+    setChancesCount(chancesCount - 1)
 
     // "Игрок проиграл", т.к. на поле есть две открытые карты без пары
-    if (playerLost)
+    if (chancesCount <= 1)
       return finishGame(STATUS_LOST)
 
-    // ... игра продолжается
+    setPreviousCard(null)
+
+    // Выбранные карты переворачиваем обратно
+    setTimeout(() => {
+      const nextCards = cards.map((card) => ({
+        ...card,
+        open: card.open && card.id !== clickedCard.id && card.id !== previousCard.id,
+      }))
+
+      setCards(nextCards)
+    }, 800)
   }
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON
@@ -180,7 +207,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 <div>
                   <p className={styles.previewText}>Запоминайте пары!</p>
                   <p className={styles.previewDescription}>
-                    Игра начнётся через {timerToStart} {calcUnits(timerToStart, "секунд", "секунду", "секунды")}
+                    Игра начнётся {printTimer(timerToStart)}
                   </p>
                 </div>
               )
@@ -206,6 +233,10 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           ))
         }
       </div>
+      {
+        useChances && chancesCount > 0
+          && <p className={`${styles.chances} ${styles[chooseColorName(chancesCount)]}`}>{printTries(chancesCount)}</p>
+      }
 
       {
         isGameEnded

@@ -10,5 +10,9 @@ export function ChancesProvider({ children }) {
     setUseChances(value)
   }
 
-  return <ChancesContext.Provider value={{ useChances, selectChances }}>{children}</ChancesContext.Provider>
+  function getChancesCount() {
+    return useChances ? 3 : 0
+  }
+
+  return <ChancesContext.Provider value={{ useChances, selectChances, getChancesCount }}>{children}</ChancesContext.Provider>
 }

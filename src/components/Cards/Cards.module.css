@@ -69,3 +69,20 @@
   margin-bottom: -12px;
   margin-right: 4px;
 }
+
+.chances {
+  font-size: 20px;
+  margin-top: 16px;
+
+  &.three {
+    color: #43d800;
+  }
+
+  &.two {
+    color: #d8d800;
+  }
+
+  &.last {
+    color: #d84300;
+  }
+}

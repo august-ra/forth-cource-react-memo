@@ -48,6 +48,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const [previousCard, setPreviousCard] = useState(null)
   // Текущий статус игры
   const [status, setStatus] = useState(STATUS_PREVIEW)
+  // Текущий статус проверки открытых карт
+  const [isCheckingNow, setIsCheckingNow] = useState(false)
 
   // Дата начала игры
   const [gameStartDate, setGameStartDate] = useState(null)
@@ -85,6 +87,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setTimer(getTimerValue(null, null))
     setStatus(STATUS_PREVIEW)
 
+    setIsCheckingNow(false)
+    setPreviousCard(null)
     setChancesCount(getChancesCount())
   }
 
@@ -97,8 +101,11 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
    */
   const openCard = (clickedCard) => {
     // Если карта уже открыта, то ничего не делаем
-    if (clickedCard.open)
+    if (clickedCard.open || isCheckingNow)
       return
+
+    if (previousCard)
+      setIsCheckingNow(true)
 
     // Игровое поле после открытия выбранной карты
     const nextCards = cards.map((card) => {
@@ -132,6 +139,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     switch (openCardsWithoutPair.length) {
       case 0:
         // "Игрок нашёл пару", т.к. на поле есть только пары одинаковых открытых карт
+        setIsCheckingNow(false)
         return setPreviousCard(null)
       case 1:
         // "Игрок ищет пару", т.к. на поле есть нечётное количество открытых карт
@@ -153,6 +161,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         open: card.open && card.id !== clickedCard.id && card.id !== previousCard.id,
       }))
 
+      setIsCheckingNow(false)
       setCards(nextCards)
     }, 800)
   }

@@ -1,28 +1,34 @@
-import { useContext } from "react"
+import { useContext, useState } from "react"
 import { Link } from "react-router-dom"
 import styles from "./SelectLevelPage.module.css"
 import { ChancesContext } from "../../context/ChancesContext/ChancesContext"
 
 
 export function SelectLevelPage() {
+  const [page, setPage] = useState(0)
   const { useChances, selectChances } = useContext(ChancesContext)
+
+  function secondPage(valueOfUseChances) {
+    setPage(page + 1)
+    selectChances(valueOfUseChances)
+  }
 
   return (
     <div className={styles.container}>
       <div className={styles.modal}>
         {
-          useChances === null
+          page === 0
             ? (
               <>
                 <h2 className={styles.title}>Выберите<br />количество шансов<br />на ошибку</h2>
                 <ul className={styles.levels}>
-                  <li className={`${styles.level} ${styles.chance}`} onClick={() => selectChances(false)}>
+                  <li className={`${styles.level} ${styles.chance}`} onClick={() => secondPage(false)}>
                     <p className={styles.levelLink}>
                       0
                     </p>
                     <p className={styles.subtext}>Только <b>«hardcore»</b></p>
                   </li>
-                  <li className={`${styles.level} ${styles.chance}`} onClick={() => selectChances(true)}>
+                  <li className={`${styles.level} ${styles.chance}`} onClick={() => secondPage(true)}>
                     <p className={styles.levelLink}>
                       3
                     </p>

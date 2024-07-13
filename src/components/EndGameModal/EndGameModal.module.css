@@ -1,13 +1,13 @@
 
 .modal {
   width: 480px;
-  height: 459px;
   border-radius: 12px;
   background: #c2f5ff;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  text-align: center;
+  padding-block: 38px;
 }
 
 .image {
@@ -46,4 +46,15 @@
   line-height: 72px;
 
   margin-bottom: 40px;
+}
+
+.leaderboard {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 32px;
+  margin-top: 18px;
+
+  &, &:visited {
+    color: #004980;
+  }
 }

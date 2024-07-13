@@ -74,6 +74,32 @@ export function calcUnits(value, unit_0, unit_1, unit_2) {
     return unit_0
 }
 
+export function printTime(time) {
+  const data = {
+    days:    0,
+    hours:   0,
+    minutes: Math.floor(time / 60),
+    seconds: time % 60,
+  }
+
+  if (data.minutes >= 59) {
+    data.hours = Math.floor(data.minutes / 60)
+    data.minutes = data.minutes % 60
+  }
+
+  if (data.hours > 23) {
+    data.days = Math.floor(data.hours / 24)
+    data.hours = data.hours % 24
+  }
+
+  if (data.days)
+    return `${data.days}:${data.hours}:${data.minutes}:${data.seconds}`
+  else if (data.hours)
+    return `${data.hours}:${data.minutes}:${data.seconds}`
+  else
+    return `${data.minutes}:${data.seconds}`
+}
+
 export function printTimer(timerToStart) {
   return `через ${timerToStart} ${calcUnits(timerToStart, "секунд", "секунду", "секунды")}`
 }

@@ -8,6 +8,8 @@ import { EndGameModal } from "../EndGameModal/EndGameModal"
 import { chooseColorName, generateDeck, printTimer, printTries } from "../../utils/cards"
 import { shuffle } from "lodash"
 
+import cn from "classnames"
+
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST"
@@ -247,7 +249,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       </div>
       {
         useChances && chancesCount > 0
-          && <p className={`${styles.chances} ${styles[chooseColorName(chancesCount)]}`}>{printTries(chancesCount)}</p>
+          && <p className={cn(styles.chances, styles[chooseColorName(chancesCount)])}>{printTries(chancesCount)}</p>
       }
 
       {

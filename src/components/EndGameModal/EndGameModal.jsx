@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import { Button } from "../Button/Button"
 import styles from "./EndGameModal.module.css"
 
@@ -20,6 +21,8 @@ export function EndGameModal({ isWon, gameDurationMinutes, gameDurationSeconds, 
       </div>
 
       <Button onClick={onClick}>Начать сначала</Button>
+
+      <Link className={styles.leaderboard} to={"/leaderboard"}>Перейти к таблице лидеров</Link>
     </div>
   )
 }

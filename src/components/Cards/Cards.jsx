@@ -169,7 +169,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   }
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON
-  const hasAchievements = status === STATUS_WON && pairsCount === 9 && (!useChances || chancesCount === 3)
+  const hasAchievements = status === STATUS_WON && pairsCount >= 9 && (!useChances || chancesCount === 3)
 
   // Игровой цикл
   useEffect(() => {

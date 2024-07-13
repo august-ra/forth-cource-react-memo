@@ -56,3 +56,52 @@ export function generateDeck(pairsCount = 3) {
 
   return deck
 }
+
+
+export function calcUnits(value, unit_0, unit_1, unit_2) {
+  let reminder = value % 100
+
+  if (reminder >= 11 && reminder <= 19)
+    return unit_0
+
+  reminder = reminder % 10
+
+  if (reminder === 1)
+    return unit_1
+  else if (reminder >= 2 && reminder <= 4)
+    return unit_2
+  else
+    return unit_0
+}
+
+export function printTimer(timerToStart) {
+  return `через ${timerToStart} ${calcUnits(timerToStart, "секунд", "секунду", "секунды")}`
+}
+
+export function printTries(chancesCount) {
+  switch (chancesCount) {
+    case 3:
+      return "Вам доступны 3 попытки"
+    case 2:
+      return "У вас есть ещё две попытки"
+    case 1:
+      return "У вас осталась последняя попытка"
+    case 0:
+    default:
+      return "Ваши попытки закончились и Вы проиграли"
+  }
+}
+
+export function chooseColorName(chancesCount) {
+  switch (chancesCount) {
+    case 3:
+      return "three"
+    case 2:
+      return "two"
+    case 1:
+      return "last"
+    case 0:
+    default:
+      return "nothing"
+  }
+}

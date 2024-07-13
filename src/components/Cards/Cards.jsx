@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import styles from "./Cards.module.css"
+import { ChancesContext } from "../../context/ChancesContext/ChancesContext"
 import { Button } from "../Button/Button"
+import { NumericLabel } from "../NumericLabel/NumericLabel"
 import { Card } from "../Card/Card"
 import { EndGameModal } from "../EndGameModal/EndGameModal"
-import { generateDeck } from "../../utils/cards"
+import { chooseColorName, generateDeck, printTimer, printTries } from "../../utils/cards"
 import { shuffle } from "lodash"
 
 
@@ -42,19 +44,28 @@ function getTimerValue(startDate, endDate) {
 export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   // В cards лежит игровое поле - массив карт и их состояние открыта\закрыта
   const [cards, setCards] = useState([])
+  // Предыдущая открытая карта, выбранная после удачной пары или сразу после начала игры
+  const [previousCard, setPreviousCard] = useState(null)
   // Текущий статус игры
   const [status, setStatus] = useState(STATUS_PREVIEW)
+  // Текущий статус проверки открытых карт
+  const [isCheckingNow, setIsCheckingNow] = useState(false)
 
   // Дата начала игры
   const [gameStartDate, setGameStartDate] = useState(null)
   // Дата конца игры
   const [gameEndDate, setGameEndDate] = useState(null)
 
+  // Состояние для таймера до начала игры
+  const [timerToStart, setTimerToStart] = useState(previewSeconds)
   // Состояние для таймера, высчитывается в setInterval на основе gameStartDate и gameEndDate
   const [timer, setTimer] = useState({
     minutes: 0,
     seconds: 0,
   })
+
+  const { useChances, getChancesCount } = useContext(ChancesContext)
+  const [chancesCount, setChancesCount] = useState(getChancesCount())
 
   function startGame() {
     const startDate = new Date()
@@ -75,6 +86,10 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setGameEndDate(null)
     setTimer(getTimerValue(null, null))
     setStatus(STATUS_PREVIEW)
+
+    setIsCheckingNow(false)
+    setPreviousCard(null)
+    setChancesCount(getChancesCount())
   }
 
   /**
@@ -86,8 +101,11 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
    */
   const openCard = (clickedCard) => {
     // Если карта уже открыта, то ничего не делаем
-    if (clickedCard.open)
+    if (clickedCard.open || isCheckingNow)
       return
+
+    if (previousCard)
+      setIsCheckingNow(true)
 
     // Игровое поле после открытия выбранной карты
     const nextCards = cards.map((card) => {
@@ -118,13 +136,34 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       return sameCards.length < 2
     })
 
-    const playerLost = openCardsWithoutPair.length >= 2
+    switch (openCardsWithoutPair.length) {
+      case 0:
+        // "Игрок нашёл пару", т.к. на поле есть только пары одинаковых открытых карт
+        setIsCheckingNow(false)
+        return setPreviousCard(null)
+      case 1:
+        // "Игрок ищет пару", т.к. на поле есть нечётное количество открытых карт
+        return setPreviousCard(clickedCard)
+    }
+
+    setChancesCount(chancesCount - 1)
 
     // "Игрок проиграл", т.к. на поле есть две открытые карты без пары
-    if (playerLost)
+    if (chancesCount <= 1)
       return finishGame(STATUS_LOST)
 
-    // ... игра продолжается
+    setPreviousCard(null)
+
+    // Выбранные карты переворачиваем обратно
+    setTimeout(() => {
+      const nextCards = cards.map((card) => ({
+        ...card,
+        open: card.open && card.id !== clickedCard.id && card.id !== previousCard.id,
+      }))
+
+      setIsCheckingNow(false)
+      setCards(nextCards)
+    }, 800)
   }
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON
@@ -142,17 +181,26 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       return shuffle(generateDeck(pairsCount))
     })
 
-    const timerId = setTimeout(() => {
-      startGame()
-    }, previewSeconds * 1000)
+    let time = previewSeconds
 
-    return () => {
-      clearTimeout(timerId)
-    }
+    const intervalId = setInterval(() => {
+      // console.log(time)
+
+      if (time > 1) {
+        --time
+        return setTimerToStart(time)
+      }
+
+      clearInterval(intervalId)
+      startGame()
+    }, 1000)
   }, [status, pairsCount, previewSeconds])
 
   // Обновляем значение таймера в интервале
   useEffect(() => {
+    if (status === STATUS_LOST || status === STATUS_WON)
+      return
+
     const intervalId = setInterval(() => {
       setTimer(getTimerValue(gameStartDate, gameEndDate))
     }, 300)
@@ -171,21 +219,13 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 <div>
                   <p className={styles.previewText}>Запоминайте пары!</p>
                   <p className={styles.previewDescription}>
-                    Игра начнётся через {previewSeconds} секунд
+                    Игра начнётся {printTimer(timerToStart)}
                   </p>
                 </div>
               )
               : (
                 <>
-                  <div className={styles.timerValue}>
-                    <div className={styles.timerDescription}>min</div>
-                    <div>{timer.minutes.toString().padStart(2, "0")}</div>
-                  </div>
-                  :
-                  <div className={styles.timerValue}>
-                    <div className={styles.timerDescription}>sec</div>
-                    <div>{timer.seconds.toString().padStart(2, "0")}</div>
-                  </div>
+                  <NumericLabel title="min" value={timer.minutes} /> : <NumericLabel title="sec" value={timer.seconds} />
                 </>
               )
           }
@@ -205,6 +245,10 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           ))
         }
       </div>
+      {
+        useChances && chancesCount > 0
+          && <p className={`${styles.chances} ${styles[chooseColorName(chancesCount)]}`}>{printTries(chancesCount)}</p>
+      }
 
       {
         isGameEnded

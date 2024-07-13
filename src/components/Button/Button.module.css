@@ -21,6 +21,11 @@
   cursor: pointer;
 }
 
+.button.enter {
+  width: 45px;
+  height: 45px;
+}
+
 .button:hover {
   background: #7ac100cc;
 }

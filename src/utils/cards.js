@@ -75,6 +75,11 @@ export function calcUnits(value, unit_0, unit_1, unit_2) {
 }
 
 export function printTime(time) {
+
+  function zeroPad(num, places = 2) {
+    return String(num).padStart(places, "0")
+  }
+
   const data = {
     days:    0,
     hours:   0,
@@ -93,11 +98,11 @@ export function printTime(time) {
   }
 
   if (data.days)
-    return `${data.days}:${data.hours}:${data.minutes}:${data.seconds}`
+    return `${data.days}:${zeroPad(data.hours, 2)}:${zeroPad(data.minutes, 2)}:${zeroPad(data.seconds, 2)}`
   else if (data.hours)
-    return `${data.hours}:${data.minutes}:${data.seconds}`
+    return `${zeroPad(data.hours, 2)}:${zeroPad(data.minutes, 2)}:${zeroPad(data.seconds, 2)}`
   else
-    return `${data.minutes}:${data.seconds}`
+    return `${zeroPad(data.minutes, 2)}:${zeroPad(data.seconds, 2)}`
 }
 
 export function printTimer(timerToStart) {

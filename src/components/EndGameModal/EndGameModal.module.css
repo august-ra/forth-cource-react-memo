@@ -48,6 +48,39 @@
   margin-bottom: 40px;
 }
 
+.form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 28px;
+}
+
+.username {
+  width: 276px;
+  height: 45px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 32px;
+  border: none;
+  border-radius: 10px;
+  outline-color: #7ac100;
+  box-sizing: border-box;
+
+  &::placeholder {
+    color: #999;
+  }
+}
+
+.good {
+  background: #e9ffed;
+  margin-bottom: 28px;
+}
+
+.submit {
+  width: 50px;
+}
+
 .leaderboard {
   font-size: 18px;
   font-weight: 400;

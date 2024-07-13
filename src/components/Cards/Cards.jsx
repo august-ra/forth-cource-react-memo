@@ -169,6 +169,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   }
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON
+  const hasAchievements = status === STATUS_WON && pairsCount === 9 && (!useChances || chancesCount === 3)
 
   // Игровой цикл
   useEffect(() => {
@@ -256,7 +257,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         isGameEnded
           && (
             <div className={styles.modalContainer}>
-              <EndGameModal isWon={status === STATUS_WON} gameDurationMinutes={timer.minutes} gameDurationSeconds={timer.seconds} onClick={resetGame} />
+              <EndGameModal isWon={status === STATUS_WON} hasAchievements={hasAchievements} gameDurationMinutes={timer.minutes} gameDurationSeconds={timer.seconds} onClick={resetGame} />
             </div>
           )
       }

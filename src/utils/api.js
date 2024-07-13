@@ -23,6 +23,18 @@ const API = {
   readLeadersFromServer() {
     return this.getDataFromEndpoint({})
   },
+
+  writeLeaderToServer(record) {
+    const params = {
+      method: "POST",
+      body:   JSON.stringify({
+        name: record.name,
+        time: record.time,
+      }),
+    }
+
+    return this.getDataFromEndpoint(params)
+  },
 }
 
 export default API

@@ -41,9 +41,9 @@ export function Leaderboard() {
           <p className={styles.head}>Время</p>
         </div>
         {
-          leaderboard.map((record) => (
+          leaderboard.map((record, index) => (
             <div className={styles.line} key={record.id}>
-              <p className={styles.element}>#{record.id}</p>
+              <p className={styles.element}>#{index + 1}</p>
               <p className={styles.element}>{record.name}</p>
               <p className={styles.element}>{printTime(record.time)}</p>
             </div>

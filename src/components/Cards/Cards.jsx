@@ -2,11 +2,13 @@ import { useContext, useEffect, useState } from "react"
 import styles from "./Cards.module.css"
 import { ChancesContext } from "../../context/ChancesContext/ChancesContext"
 import { Button } from "../Button/Button"
-import { NumericLabel } from "../NumericLabel/NumericLabel"
+import { TimeLabel } from "../TimeLabel/TimeLabel"
 import { Card } from "../Card/Card"
 import { EndGameModal } from "../EndGameModal/EndGameModal"
 import { chooseColorName, generateDeck, printTimer, printTries } from "../../utils/cards"
 import { shuffle } from "lodash"
+
+import cn from "classnames"
 
 
 // Игра закончилась
@@ -167,6 +169,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   }
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON
+  const hasAchievements = status === STATUS_WON && pairsCount >= 9 && (!useChances || chancesCount === 3)
 
   // Игровой цикл
   useEffect(() => {
@@ -212,24 +215,20 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <div className={styles.timer}>
-          {
-            status === STATUS_PREVIEW
-              ? (
-                <div>
-                  <p className={styles.previewText}>Запоминайте пары!</p>
-                  <p className={styles.previewDescription}>
-                    Игра начнётся {printTimer(timerToStart)}
-                  </p>
-                </div>
-              )
-              : (
-                <>
-                  <NumericLabel title="min" value={timer.minutes} /> : <NumericLabel title="sec" value={timer.seconds} />
-                </>
-              )
-          }
-        </div>
+        {
+          status === STATUS_PREVIEW
+            ? (
+              <div className={styles.previewTimer}>
+                <p className={styles.previewText}>Запоминайте пары!</p>
+                <p className={styles.previewDescription}>
+                  Игра начнётся {printTimer(timerToStart)}
+                </p>
+              </div>
+            )
+            : (
+              <TimeLabel minutes={timer.minutes} seconds={timer.seconds} />
+            )
+        }
         {
           status === STATUS_IN_PROGRESS
             && (
@@ -247,14 +246,14 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       </div>
       {
         useChances && chancesCount > 0
-          && <p className={`${styles.chances} ${styles[chooseColorName(chancesCount)]}`}>{printTries(chancesCount)}</p>
+          && <p className={cn(styles.chances, styles[chooseColorName(chancesCount)])}>{printTries(chancesCount)}</p>
       }
 
       {
         isGameEnded
           && (
             <div className={styles.modalContainer}>
-              <EndGameModal isWon={status === STATUS_WON} gameDurationMinutes={timer.minutes} gameDurationSeconds={timer.seconds} onClick={resetGame} />
+              <EndGameModal isWon={status === STATUS_WON} hasAchievements={hasAchievements} gameDurationMinutes={timer.minutes} gameDurationSeconds={timer.seconds} onClick={resetGame} />
             </div>
           )
       }

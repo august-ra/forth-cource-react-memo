@@ -99,3 +99,15 @@
   font-size: 14px;
   line-height: normal;
 }
+
+.leaderboard {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 32px;
+  position: absolute;
+  bottom: 24px;
+
+  &, &:visited {
+    color: #004980;
+  }
+}

@@ -43,6 +43,10 @@
   line-height: 72px;
 }
 
+.previewTimer {
+  color: #fff;
+}
+
 .previewText {
   font-size: 30px;
   line-height: 30px;

@@ -1,0 +1,58 @@
+
+.achievement {
+  position: relative;
+
+  display: flex;
+  gap: 6px;
+}
+
+.achievementImage {
+  width: 32px;
+  height: 32px;
+}
+
+.achievementBalloon {
+  display: none;
+  width: 174px;
+  height: 78px;
+  color: #004980;
+  background: #C2F5FF;
+  border-radius: 12px;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 24px;
+  text-align: center;
+  padding: 15px 20px;
+  box-sizing: border-box;
+
+  position: absolute;
+  top: -90px;
+  left: 3px;
+
+  &::after {
+    content: "";
+    position: absolute;
+    background: #C2F5FF;
+    width: 20px;
+    height: 14px;
+    clip-path: polygon(0% 0, 100% 0%, 0% 100%);
+    bottom: -9px;
+    left: 14px;
+  }
+
+  &:not(.achievementImage:hover) {
+    display: none;
+  }
+
+  .achievementImage:hover~& {
+    display: block;
+  }
+}
+
+.hardMode {
+  width: 212px;
+}
+
+.pureVictory {
+  width: 174px;
+}

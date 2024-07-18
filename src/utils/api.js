@@ -1,6 +1,6 @@
 
 const API = {
-  leaderboardURI: "https://wedev-api.sky.pro/api/leaderboard", // GET (read) + POST (send)
+  leaderboardURI: "https://wedev-api.sky.pro/api/v2/leaderboard", // GET (read) + POST (send)
 
   getDataFromEndpoint(params) {
     let statusCode = 0

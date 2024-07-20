@@ -9,6 +9,7 @@ import { chooseColorName, generateDeck, printTimer, printTries } from "../../uti
 import { shuffle } from "lodash"
 
 import cn from "classnames"
+import { HelperImages } from "../HelperImages/HelperImages"
 
 
 // Игра закончилась
@@ -226,15 +227,19 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
               </div>
             )
             : (
-              <TimeLabel minutes={timer.minutes} seconds={timer.seconds} />
+              <>
+                <TimeLabel minutes={timer.minutes} seconds={timer.seconds} />
+
+                <div className={styles.helpers}>
+                  <HelperImages hasSeeing={true} hasOpening={true} />
+                </div>
+              </>
             )
         }
-        {
-          status === STATUS_IN_PROGRESS
-            && (
-              <Button onClick={resetGame}>Начать заново</Button>
-            )
-        }
+
+        <div className={styles.right}>
+          <Button onClick={resetGame}>Начать заново</Button>
+        </div>
       </div>
 
       <div className={styles.cards}>

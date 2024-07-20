@@ -40,9 +40,6 @@
     left: 14px;
   }
 
-  &:not(.achievementImage:hover) {
-    display: none;
-  }
 
   .achievementImage:hover~& {
     display: block;

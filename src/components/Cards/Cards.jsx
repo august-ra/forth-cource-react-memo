@@ -3,13 +3,13 @@ import styles from "./Cards.module.css"
 import { ChancesContext } from "../../context/ChancesContext/ChancesContext"
 import { Button } from "../Button/Button"
 import { TimeLabel } from "../TimeLabel/TimeLabel"
+import { Helpers } from "../Helpers/Helpers"
 import { Card } from "../Card/Card"
 import { EndGameModal } from "../EndGameModal/EndGameModal"
 import { chooseColorName, generateDeck, printTimer, printTries } from "../../utils/cards"
 import { shuffle } from "lodash"
 
 import cn from "classnames"
-import { HelperImages } from "../HelperImages/HelperImages"
 
 
 // Игра закончилась
@@ -231,7 +231,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 <TimeLabel minutes={timer.minutes} seconds={timer.seconds} />
 
                 <div className={styles.helpers}>
-                  <HelperImages hasSeeing={true} hasOpening={true} />
+                  <Helpers hasSeeing={true} hasOpening={true} />
                 </div>
               </>
             )

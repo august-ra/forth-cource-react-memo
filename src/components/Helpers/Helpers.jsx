@@ -1,4 +1,4 @@
-import styles from "./HelperImages.module.css"
+import styles from "./Helpers.module.css"
 
 import cn from "classnames"
 
@@ -6,7 +6,7 @@ import eyeImageUrl from "./images/eye.svg"
 import pairImageUrl from "./images/pair.svg"
 
 
-export function HelperImages({ hasSeeing, hasOpening }) {
+export function Helpers({ hasSeeing, hasOpening }) {
   return (
     <div className={styles.helpers}>
       <div>

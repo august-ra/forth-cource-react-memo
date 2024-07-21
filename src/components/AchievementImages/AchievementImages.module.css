@@ -40,7 +40,6 @@
     left: 14px;
   }
 
-
   .achievementImage:hover~& {
     display: block;
   }

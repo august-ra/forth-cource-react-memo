@@ -12,10 +12,6 @@
   &:hover {
     position: relative;
     z-index: 1;
-
-    & + div {
-      display: block;
-    }
   }
 }
 
@@ -24,7 +20,6 @@
 }
 
 .blockedBack {
-  display: none;
   background: #004980;
   opacity: 0.6;
   width: 200vw;
@@ -32,15 +27,11 @@
   position: absolute;
   transform: translate(-50%, -50%);
   z-index: 1;
-
-  &:has(+ .image:hover) {
-    display: block;
-  }
 }
 
 .balloon {
-  display: none;
   position: absolute;
+  top: 68px;
   background: #C2F5FF;
   width: 222px;
   border-radius: 12px;

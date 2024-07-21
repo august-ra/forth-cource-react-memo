@@ -10,9 +10,9 @@ import deadImageUrl from "./images/dead.png"
 import celebrationImageUrl from "./images/celebration.png"
 
 
-export function EndGameModal({ isWon, hasAchievements, gameDurationMinutes, gameDurationSeconds, onClick }) {
-  const title = isWon && hasAchievements ? "Вы попали" : isWon ? "Вы победили!" : "Вы проиграли!"
-  const secondLine = isWon && hasAchievements ? "в таблицу лидеров!" : ""
+export function EndGameModal({ isWon, achievements, gameDurationMinutes, gameDurationSeconds, onClick }) {
+  const title = isWon ? "Вы попали" : "Вы проиграли!"
+  const secondLine = isWon ? "в таблицу лидеров!" : ""
   const imgSrc = isWon ? celebrationImageUrl : deadImageUrl
   const imgAlt = isWon ? "celebration emoji" : "dead emoji"
 
@@ -27,8 +27,9 @@ export function EndGameModal({ isWon, hasAchievements, gameDurationMinutes, game
     e.preventDefault()
 
     API.writeLeaderToServer({
-      name: username,
-      time: gameDurationMinutes * 60 + gameDurationSeconds,
+      name:         username,
+      time:         gameDurationMinutes * 60 + gameDurationSeconds,
+      achievements: achievements,
     })
       .then(() => {
         setIsSaved(true)
@@ -40,7 +41,7 @@ export function EndGameModal({ isWon, hasAchievements, gameDurationMinutes, game
       <img className={styles.image} src={imgSrc} alt={imgAlt} />
       <h2 className={styles.title}>{title}{ secondLine && <><br/> {secondLine}</> }</h2>
       {
-        isWon && hasAchievements
+        isWon
           && (isSaved
             ? (
               <input className={cn(styles.username, styles.good)} value={username} readOnly />

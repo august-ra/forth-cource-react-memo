@@ -7,78 +7,69 @@ import eyeImageUrl from "./images/eye.svg"
 import pairImageUrl from "./images/pair.svg"
 
 
+const data = {
+  showCards: {
+    title:       "Покажи карты",
+    description: "Открой все карты на 5 секунд, потому что я некоторые не запомнил",
+    image:       eyeImageUrl,
+    alt:         "eye",
+  },
+  openPair: {
+    title:       "Открой пару",
+    description: "Убери одну закрытую пару карт, чтобы мне было попроще",
+    image:       pairImageUrl,
+    alt:         "pair",
+  },
+}
+
 export function Helpers({ hasSeeing, hasOpening, showCards, openPair }) {
-  const [mark, updateComponent] = useState(false)
+  return (
+    <div className={styles.helpers}>
+      <Helper data={data.showCards} disabled={!hasSeeing} onClick={showCards} />
+      <Helper data={data.openPair} disabled={!hasOpening} onClick={openPair} />
+    </div>
+  )
+}
 
-  /*
-   * I got the superpower over React! I can use an object without setState and have got all the functionality
-   * but ... I don't need that too for single components. I can make states out the components. See line no. 10
-   * And I need just one using state to update the hole component
-   *
-   * const [opened] = useState({ left: false, right: false })
-   */
+function Helper({ data, disabled, onClick }) {
+  const [opened, setOpened] = useState(false)
 
-  function toggleOpen(key, value) {
-    if (key === "left" && !hasSeeing || key === "right" && !hasOpening)
+  function openHint() {
+    if (disabled)
       return
 
-    opened[key] = value
-    updateComponent(!mark)
+    setOpened(true)
   }
 
-  const openLeft = () => toggleOpen("left", true)
-  const closeLeft = () => toggleOpen("left", false)
-
-  const openRight = () => toggleOpen("right", true)
-  const closeRight = () => toggleOpen("right", false)
-
-  function clickLeft() {
-    if (opened.left)
-      closeLeft()
-
-    showCards()
+  function closeHint() {
+    setOpened(false)
   }
 
-  function clickRight() {
-    if (opened.right)
-      closeRight()
+  function handleClick() {
+    if (disabled)
+      return
 
-    openPair()
+    if (opened)
+      closeHint()
+
+    onClick()
   }
 
   return (
-    <div className={styles.helpers}>
-      <div>
-        {
-          opened.left
-            && (
-              <>
-                <div className={styles.blockedBack}/>
-                <div className={styles.balloon}>
-                  <h3>Покажи карты</h3>
-                  <p>Открой все карты на 5 секунд, потому что я некоторые не запомнил</p>
-                </div>
-              </>
-            )
-        }
-        <img className={cn(styles.image, { [styles.disabledImage]: !hasSeeing })} src={eyeImageUrl} alt="eye" onClick={clickLeft} onMouseOver={openLeft} onMouseOut={closeLeft} />
-      </div>
-
-      <div>
-        {
-          opened.right
-            && (
-              <>
-                <div className={styles.blockedBack}/>
-                <div className={styles.balloon}>
-                  <h3>Открой пару</h3>
-                  <p>Убери одну закрытую пару карт, чтобы мне было попроще</p>
-                </div>
-              </>
-            )
-        }
-        <img className={cn(styles.image, { [styles.disabledImage]: !hasOpening })} src={pairImageUrl} alt="pair" onClick={clickRight} onMouseOver={openRight} onMouseOut={closeRight} />
-      </div>
+    <div>
+      {
+        opened
+          && (
+            <>
+              <div className={styles.blockedBack}/>
+              <div className={styles.balloon}>
+                <h3>{data.title}</h3>
+                <p>{data.description}</p>
+              </div>
+            </>
+          )
+      }
+      <img className={cn(styles.image, { [styles.disabledImage]: disabled })} src={data.image} alt={data.alt} onClick={handleClick} onMouseOver={openHint} onMouseOut={closeHint} />
     </div>
   )
 }

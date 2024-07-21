@@ -98,6 +98,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setIsCheckingNow(false)
     setPreviousCard(null)
 
+    setTimerToStart(5)
     updateAchievements(false)
     setChancesCount(getChancesCount())
     setHasShowCardsHelper(true)

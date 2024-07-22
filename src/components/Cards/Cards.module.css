@@ -30,6 +30,7 @@
   justify-content: space-between;
   align-items: flex-end;
   margin-bottom: 35px;
+  position: relative;
 }
 
 .timer {
@@ -72,6 +73,12 @@
 
   margin-bottom: -12px;
   margin-right: 4px;
+}
+
+.helpers,
+.right {
+  position: relative;
+  bottom: 11px;
 }
 
 .chances {

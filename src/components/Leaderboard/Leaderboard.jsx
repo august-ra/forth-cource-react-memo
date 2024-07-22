@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import styles from "./Leaderboard.module.css"
+import { HardModeImage } from "../AchievementImages/HardModeImage"
+import { PureVictoryImage } from "../AchievementImages/PureVictoryImage"
 import { Button } from "../Button/Button"
 
 import API from "../../utils/api"
 import { printTime } from "../../utils/cards"
+
+import cn from "classnames"
 
 
 /**
@@ -38,6 +42,7 @@ export function Leaderboard() {
         <div className={styles.line}>
           <p className={styles.head}>Позиция</p>
           <p className={styles.head}>Пользователь</p>
+          <p className={styles.head}>Достижения</p>
           <p className={styles.head}>Время</p>
         </div>
         {
@@ -45,6 +50,10 @@ export function Leaderboard() {
             <div className={styles.line} key={record.id}>
               <p className={styles.element}>#{index + 1}</p>
               <p className={styles.element}>{record.name}</p>
+              <div className={cn(styles.element, styles.achievements)}>
+                <HardModeImage isActive={record.achievements.includes(1)} />
+                <PureVictoryImage isActive={record.achievements.includes(2)} />
+              </div>
               <p className={styles.element}>{printTime(record.time)}</p>
             </div>
           ))

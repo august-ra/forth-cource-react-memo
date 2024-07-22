@@ -1,10 +1,8 @@
 
 .container {
   max-width: 944px;
-  width: 100%;
   margin: 0 auto;
   padding: 52px 26px 26px;
-  box-sizing: border-box;
 }
 
 .cards {
@@ -59,7 +57,7 @@
   padding-inline: 20px;
 
   display: grid;
-  grid-template-columns: calc(100% * 178 / 944) 1fr calc(100% * 102 / 944);
+  grid-template-columns: calc(100% * 178 / 904) calc(100% * 227 / 904) calc(100% * 194 / 904) calc(100% * 92 / 904);
   align-items: center;
   gap: 66px;
 }
@@ -70,4 +68,13 @@
 
 .element {
   color: #000;
+
+  &:not(.achievements) {
+    text-wrap: nowrap;
+  }
+}
+
+.achievements {
+  display: flex;
+  gap: 6px;
 }

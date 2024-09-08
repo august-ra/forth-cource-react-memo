@@ -1,8 +1,10 @@
 import { useContext, useEffect, useState } from "react"
+import { useAchievements } from "../../hooks/useAchievements"
 import styles from "./Cards.module.css"
 import { ChancesContext } from "../../context/ChancesContext/ChancesContext"
 import { Button } from "../Button/Button"
 import { TimeLabel } from "../TimeLabel/TimeLabel"
+import { Helpers } from "../Helpers/Helpers"
 import { Card } from "../Card/Card"
 import { EndGameModal } from "../EndGameModal/EndGameModal"
 import { chooseColorName, generateDeck, printTimer, printTries } from "../../utils/cards"
@@ -12,12 +14,13 @@ import cn from "classnames"
 
 
 // Игра закончилась
-const STATUS_LOST = "STATUS_LOST"
-const STATUS_WON = "STATUS_WON"
+const STATUS_LOST           = "STATUS_LOST"
+const STATUS_WON            = "STATUS_WON"
 // Идёт игра: карты закрыты, игрок может их открыть
-const STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS"
+const STATUS_IN_PROGRESS    = "STATUS_IN_PROGRESS"
 // Начинается игра: игрок видит все карты в течение нескольких секунд
-const STATUS_PREVIEW = "STATUS_PREVIEW"
+const STATUS_PREVIEW        = "STATUS_PREVIEW"
+const STATUS_PREVIEW_HELPER = "STATUS_PREVIEW_HELPER"
 
 
 function getTimerValue(startDate, endDate) {
@@ -66,8 +69,11 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     seconds: 0,
   })
 
+  const { achievements, updateAchievements } = useAchievements(pairsCount)
   const { useChances, getChancesCount } = useContext(ChancesContext)
   const [chancesCount, setChancesCount] = useState(getChancesCount())
+  const [hasShowCardsHelper, setHasShowCardsHelper] = useState(true)
+  const [hasOpenPairHelper, setHasOpenPairHelper] = useState(true)
 
   function startGame() {
     const startDate = new Date()
@@ -91,7 +97,87 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
     setIsCheckingNow(false)
     setPreviousCard(null)
+
+    setTimerToStart(5)
+    updateAchievements(false)
     setChancesCount(getChancesCount())
+    setHasShowCardsHelper(true)
+    setHasOpenPairHelper(true)
+  }
+
+  function helpShowCards() {
+    if (!hasShowCardsHelper)
+      return
+
+    setStatus(STATUS_PREVIEW_HELPER)
+    setTimerToStart(5)
+
+    if (achievements.includes(2))
+      updateAchievements(true)
+
+    let time = previewSeconds
+
+    const intervalId = setInterval(() => {
+      if (time > 1) {
+        --time
+        return setTimerToStart(time)
+      }
+
+      clearInterval(intervalId)
+      setStatus(STATUS_IN_PROGRESS)
+      setHasShowCardsHelper(false)
+    }, 1000)
+  }
+
+  function helpOpenPair() {
+    if (!hasOpenPairHelper)
+      return
+
+    if (achievements.includes(2))
+      updateAchievements(true)
+
+    const closedCards = {}
+    const usedSuits = []
+
+    cards.forEach((card) => {
+      if (card.open)
+        return
+
+      if (!closedCards[card.suit]) {
+        closedCards[card.suit] = []
+        usedSuits.push(card.suit)
+      }
+
+      if (!closedCards[card.suit].includes(card.rank))
+        closedCards[card.suit].push(card.rank)
+    })
+
+    const suit = usedSuits[Math.floor(Math.random() * usedSuits.length)]
+    const ranks = closedCards[suit]
+    const rank = ranks.length === 1 ? ranks[0] : ranks[Math.floor(Math.random() * ranks.length)]
+
+    console.log(`${suit} => ${rank}`)
+
+    let openingCard = null
+
+    cards.forEach((card) => {
+      let opened = card.open
+
+      if (!opened) {
+        opened = card.suit === suit && card.rank === rank
+
+        if (opened && !openingCard) {
+          openingCard = card
+          opened = false
+        }
+      }
+
+      card.open = opened
+    })
+
+    openCard(openingCard)
+
+    setHasOpenPairHelper(false)
   }
 
   /**
@@ -169,7 +255,6 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   }
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON
-  const hasAchievements = status === STATUS_WON && pairsCount >= 9 && (!useChances || chancesCount === 3)
 
   // Игровой цикл
   useEffect(() => {
@@ -187,8 +272,6 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     let time = previewSeconds
 
     const intervalId = setInterval(() => {
-      // console.log(time)
-
       if (time > 1) {
         --time
         return setTimerToStart(time)
@@ -216,23 +299,37 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     <div className={styles.container}>
       <div className={styles.header}>
         {
-          status === STATUS_PREVIEW
+          status === STATUS_PREVIEW || status === STATUS_PREVIEW_HELPER
             ? (
               <div className={styles.previewTimer}>
                 <p className={styles.previewText}>Запоминайте пары!</p>
                 <p className={styles.previewDescription}>
-                  Игра начнётся {printTimer(timerToStart)}
+                  {`Игра ${status === STATUS_PREVIEW ? "начнётся" : "продолжится"} ${printTimer(timerToStart)}`}
                 </p>
               </div>
             )
             : (
-              <TimeLabel minutes={timer.minutes} seconds={timer.seconds} />
+              <>
+                <TimeLabel minutes={timer.minutes} seconds={timer.seconds} />
+
+                {
+                  status === STATUS_IN_PROGRESS
+                    && (
+                      <div className={styles.helpers}>
+                        <Helpers hasSeeing={hasShowCardsHelper} hasOpening={hasOpenPairHelper} showCards={helpShowCards} openPair={helpOpenPair} />
+                      </div>
+                    )
+                }
+              </>
             )
         }
+
         {
           status === STATUS_IN_PROGRESS
             && (
-              <Button onClick={resetGame}>Начать заново</Button>
+              <div className={styles.right}>
+                <Button onClick={resetGame}>Начать заново</Button>
+              </div>
             )
         }
       </div>
@@ -253,7 +350,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         isGameEnded
           && (
             <div className={styles.modalContainer}>
-              <EndGameModal isWon={status === STATUS_WON} hasAchievements={hasAchievements} gameDurationMinutes={timer.minutes} gameDurationSeconds={timer.seconds} onClick={resetGame} />
+              <EndGameModal isWon={status === STATUS_WON} achievements={achievements} gameDurationMinutes={timer.minutes} gameDurationSeconds={timer.seconds} onClick={resetGame} />
             </div>
           )
       }
